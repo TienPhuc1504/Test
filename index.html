@@ -23,6 +23,8 @@
 
     html {
       scroll-behavior: smooth;
+      /* Forces scrollbar to prevent layout shifts, aiding centering calculations */
+      overflow-y: scroll;
     }
 
     body {
@@ -34,8 +36,8 @@
     }
 
     main section[id] {
-      scroll-margin-top: 120px;
       /* Adjusted for fixed header height */
+      scroll-margin-top: 100px;
     }
 
     body::before,
@@ -224,48 +226,62 @@
 
 <body class="opacity-0 transition-opacity duration-1000">
 
-  <header class="fixed top-4 left-4 right-4 z-50 px-8 py-3 glass rounded-full shadow-lg">
+  <header class="fixed top-4 left-4 right-4 z-50 px-6 py-3 glass rounded-full shadow-lg">
     <nav class="max-w-7xl mx-auto flex justify-between items-center">
-      <a href="#" class="text-xl font-semibold hover:text-yellow-400 transition-colors duration-300">VŨ TIẾN PHÚC</a>
-      <ul id="desktop-menu" class="flex flex-row items-center gap-8">
+      <a href="#" class="text-lg md:text-xl font-semibold hover:text-yellow-400 transition-colors duration-300">VŨ TIẾN PHÚC</a>
+
+      <ul id="desktop-menu" class="hidden md:flex flex-row items-center gap-8">
         <li><a href="#" class="flex items-center gap-2 hover:text-yellow-400"><i class="ph ph-house"></i>Home</a></li>
         <li><a href="#about" class="flex items-center gap-2 hover:text-yellow-400"><i class="ph ph-user"></i>About</a></li>
         <li><a href="#skills" class="flex items-center gap-2 hover:text-yellow-400"><i class="ph ph-code"></i>Skills</a></li>
-        <li><a href="#contact" class="flex items-center gap-2 hover:text-yellow-400"><i class="ph ph-envelope"></i>Contact</a></li>
+        <li><a id="contact-link" href="#contact" class="flex items-center gap-2 hover:text-yellow-400"><i class="ph ph-envelope"></i>Contact</a></li>
       </ul>
+
+      <button id="mobile-menu-button" class="md:hidden text-2xl z-[101]">
+        <i class="ph ph-list"></i>
+      </button>
     </nav>
   </header>
 
+  <div id="mobile-menu-overlay" class="hidden md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[99]"></div>
+  <div id="mobile-menu" class="md:hidden fixed top-0 right-0 h-full w-2/3 max-w-sm bg-gray-900/90 backdrop-blur-xl z-[100] transform translate-x-full transition-transform duration-300 ease-in-out">
+    <ul class="flex flex-col items-center justify-center h-full gap-8 text-xl">
+      <li><a href="#" class="mobile-nav-link flex items-center gap-2 hover:text-yellow-400"><i class="ph ph-house"></i>Home</a></li>
+      <li><a href="#about" class="mobile-nav-link flex items-center gap-2 hover:text-yellow-400"><i class="ph ph-user"></i>About</a></li>
+      <li><a href="#skills" class="mobile-nav-link flex items-center gap-2 hover:text-yellow-400"><i class="ph ph-code"></i>Skills</a></li>
+      <li><a href="#contact" id="mobile-contact-link" class="mobile-nav-link flex items-center gap-2 hover:text-yellow-400"><i class="ph ph-envelope"></i>Contact</a></li>
+    </ul>
+  </div>
+
+
   <main class="pt-28">
-    <section id="home" class="min-h-screen flex items-center justify-center px-6">
-      <div style="transform: translateY(-85px);">
-        <div class="max-w-6xl w-full flex flex-row items-center justify-between gap-16 animate-scroll">
-          <div class="w-3/4 text-left">
-            <div class="space-y-4 animate-float">
-              <p class="text-xl text-gray-400 mb-2">Hi, tôi là</p>
-              <h1 class="wavy-text text-6xl font-bold mb-4">VŨ TIẾN PHÚC</h1>
-              <p class="text-2xl text-gray-300"><span id="typing-text" class="typing"></span></p>
-              <div class="mt-8 flex flex-row items-center justify-start gap-4">
-                <a href="#about" class="btn-glow inline-block">About Me</a>
-                <a href="#skills" class="btn-glow inline-block">My Skills</a>
-              </div>
+     <section id="home" class="min-h-screen flex items-center justify-center px-6">
+      <div class="max-w-6xl w-full flex flex-col-reverse md:flex-row items-center justify-center md:justify-between gap-12 md:gap-16 animate-scroll -mt-28">
+        <div class="w-full md:w-3/4 text-center md:text-left">
+          <div class="space-y-4 animate-float">
+            <p class="text-lg md:text-xl text-gray-400 mb-2">Hi, tôi là</p>
+            <h1 class="wavy-text text-4xl sm:text-5xl md:text-6xl font-bold mb-4">VŨ TIẾN PHÚC</h1>
+            <p class="text-xl md:text-2xl text-gray-300 h-8"><span id="typing-text" class="typing"></span></p>
+            <div class="mt-8 flex flex-row items-center justify-center md:justify-start gap-4">
+              <a href="#about" class="btn-glow inline-block text-sm md:text-base">About Me</a>
+              <a href="#skills" class="btn-glow inline-block text-sm md:text-base">My Skills</a>
             </div>
           </div>
-          <img src="img/Avatar.png" alt="Avatar" class="w-72 h-72 rounded-full border-4 border-white shadow-xl transition-all duration-500 ease-in-out hover:scale-105 hover:shadow-[0_0_35px_-5px_rgba(250,204,21,0.6)]" />
         </div>
+        <img src="img/Avatar.png" alt="Avatar" class="w-48 h-48 sm:w-60 sm:h-60 md:w-72 md:h-72 rounded-full border-4 border-white shadow-xl transition-all duration-500 ease-in-out hover:scale-105 hover:shadow-[0_0_35px_-5px_rgba(250,204,21,0.6)]" />
       </div>
     </section>
 
     <section id="about" class="py-16 flex items-center justify-center px-6">
-      <div class="max-w-6xl w-full grid grid-cols-2 gap-16 items-center animate-scroll" style="transform: translateY(-36px);">
+      <div class="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center animate-scroll" style="transform: translateY(-36px);">
         <div class="flex items-center justify-center">
-          <img src="img/Avatar.png" alt="My Portrait" class="w-96 h-96 object-cover rounded-xl shadow-lg border-4 border-white transition-transform duration-500 hover:scale-105" />
+          <img src="img/Avatar.png" alt="My Portrait" class="w-full max-w-md md:w-96 h-auto object-cover rounded-xl shadow-lg border-4 border-white transition-transform duration-500 hover:scale-105" />
         </div>
-        <div class="glass p-8 rounded-2xl text-gray-300 space-y-6">
-          <h2 class="text-3xl font-bold text-white flex items-center gap-3">
-            <i class="ph ph-user-circle text-3xl"></i> About Me
+        <div class="glass p-6 md:p-8 rounded-2xl text-gray-300 space-y-6">
+          <h2 class="text-2xl md:text-3xl font-bold text-white flex items-center gap-3">
+            <i class="ph ph-user-circle text-2xl md:text-3xl"></i> About Me
           </h2>
-          <div class="grid grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div class="flex items-start gap-4">
               <div class="bg-white/10 p-3 rounded-lg"><i class="ph ph-identification-card text-xl text-white"></i></div>
               <div>
@@ -318,41 +334,41 @@
 
     <section id="skills" class="min-h-screen flex items-center justify-center px-6">
       <div class="max-w-5xl w-full animate-scroll">
-        <h2 class="text-4xl font-bold text-center mb-12">My Skills</h2>
-        <h3 class="text-2xl font-semibold text-center mb-6 text-yellow-400/90">Languages & Frontend</h3>
-        <div class="grid grid-cols-4 gap-8 mb-12">
-          <div class="p-6 glass rounded-2xl text-center flex flex-col items-center justify-start">
-            <i class="ph-bold ph-file-cpp text-5xl text-yellow-400 mb-4"></i>
-            <h3 class="text-xl font-semibold mb-2">C++</h3>
-            <p class="text-gray-300 text-sm flex-grow">OOP, STL, Algorithms, Game/Simulation Projects</p>
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">My Skills</h2>
+        <h3 class="text-xl md:text-2xl font-semibold text-center mb-6 text-yellow-400/90">Languages & Frontend</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 mb-12">
+          <div class="p-4 md:p-6 glass rounded-2xl text-center flex flex-col items-center justify-start">
+            <i class="ph-bold ph-file-cpp text-4xl md:text-5xl text-yellow-400 mb-4"></i>
+            <h3 class="text-lg md:text-xl font-semibold mb-2">C++</h3>
+            <p class="text-gray-300 text-xs md:text-sm flex-grow">OOP, STL, Algorithms, Game/Simulation Projects</p>
           </div>
-          <div class="p-6 glass rounded-2xl text-center flex flex-col items-center justify-start">
-            <i class="ph-bold ph-file-html text-5xl text-yellow-400 mb-4"></i>
-            <h3 class="text-xl font-semibold mb-2">HTML</h3>
-            <p class="text-gray-300 text-sm flex-grow">Semantic HTML5, Accessibility (a11y)</p>
+          <div class="p-4 md:p-6 glass rounded-2xl text-center flex flex-col items-center justify-start">
+            <i class="ph-bold ph-file-html text-4xl md:text-5xl text-yellow-400 mb-4"></i>
+            <h3 class="text-lg md:text-xl font-semibold mb-2">HTML</h3>
+            <p class="text-gray-300 text-xs md:text-sm flex-grow">Semantic HTML5, Accessibility (a11y)</p>
           </div>
-          <div class="p-6 glass rounded-2xl text-center flex flex-col items-center justify-start">
-            <i class="ph-bold ph-file-css text-5xl text-yellow-400 mb-4"></i>
-            <h3 class="text-xl font-semibold mb-2">CSS</h3>
-            <p class="text-gray-300 text-sm flex-grow">Responsive Design, Flexbox, Grid, TailwindCSS</p>
+          <div class="p-4 md:p-6 glass rounded-2xl text-center flex flex-col items-center justify-start">
+            <i class="ph-bold ph-file-css text-4xl md:text-5xl text-yellow-400 mb-4"></i>
+            <h3 class="text-lg md:text-xl font-semibold mb-2">CSS</h3>
+            <p class="text-gray-300 text-xs md:text-sm flex-grow">Responsive Design, Flexbox, Grid, TailwindCSS</p>
           </div>
-          <div class="p-6 glass rounded-2xl text-center flex flex-col items-center justify-start">
-            <i class="ph-bold ph-file-js text-5xl text-yellow-400 mb-4"></i>
-            <h3 class="text-xl font-semibold mb-2">JavaScript</h3>
-            <p class="text-gray-300 text-sm flex-grow">DOM, Events, Animation, Fetch API</p>
+          <div class="p-4 md:p-6 glass rounded-2xl text-center flex flex-col items-center justify-start">
+            <i class="ph-bold ph-file-js text-4xl md:text-5xl text-yellow-400 mb-4"></i>
+            <h3 class="text-lg md:text-xl font-semibold mb-2">JavaScript</h3>
+            <p class="text-gray-300 text-xs md:text-sm flex-grow">DOM, Events, Animation, Fetch API</p>
           </div>
         </div>
-        <h3 class="text-2xl font-semibold text-center mb-6 text-yellow-400/90">Tools & Version Control</h3>
-        <div class="grid grid-cols-4 gap-8 justify-center">
-          <div class="col-start-2 p-6 glass rounded-2xl text-center flex flex-col items-center justify-start">
-            <i class="ph-bold ph-git-branch text-5xl text-yellow-400 mb-4"></i>
-            <h3 class="text-xl font-semibold mb-2">Git</h3>
-            <p class="text-gray-300 text-sm flex-grow">Branching, Merging, Committing</p>
+        <h3 class="text-xl md:text-2xl font-semibold text-center mb-6 text-yellow-400/90">Tools & Version Control</h3>
+        <div class="grid grid-cols-2 gap-4 md:gap-8 max-w-md mx-auto">
+          <div class="p-4 md:p-6 glass rounded-2xl text-center flex flex-col items-center justify-start">
+            <i class="ph-bold ph-git-branch text-4xl md:text-5xl text-yellow-400 mb-4"></i>
+            <h3 class="text-lg md:text-xl font-semibold mb-2">Git</h3>
+            <p class="text-gray-300 text-xs md:text-sm flex-grow">Branching, Merging, Committing</p>
           </div>
-          <div class="p-6 glass rounded-2xl text-center flex flex-col items-center justify-start">
-            <i class="ph-bold ph-github-logo text-5xl text-yellow-400 mb-4"></i>
-            <h3 class="text-xl font-semibold mb-2">GitHub</h3>
-            <p class="text-gray-300 text-sm flex-grow">Collaboration, Pull Requests, Actions</p>
+          <div class="p-4 md:p-6 glass rounded-2xl text-center flex flex-col items-center justify-start">
+            <i class="ph-bold ph-github-logo text-4xl md:text-5xl text-yellow-400 mb-4"></i>
+            <h3 class="text-lg md:text-xl font-semibold mb-2">GitHub</h3>
+            <p class="text-gray-300 text-xs md:text-sm flex-grow">Collaboration, Pull Requests, Actions</p>
           </div>
         </div>
       </div>
@@ -360,20 +376,20 @@
 
     <section id="contact" class="min-h-[calc(100vh-50px)] flex items-center justify-center px-6">
       <div class="animate-scroll">
-        <div class="max-w-xl w-full glass p-10 text-center rounded-2xl">
-          <h2 class="text-4xl font-bold mb-6">Contact</h2>
+        <div class="max-w-xl w-full glass p-8 md:p-10 text-center rounded-2xl">
+          <h2 class="text-3xl md:text-4xl font-bold mb-6">Contact</h2>
           <p class="mb-6 text-gray-300">Gửi email cho tôi tại <a href="mailto:tienphuc1504@gmail.com" class="text-yellow-400 underline hover:text-yellow-300">tienphuc1504@gmail.com</a></p>
-          <div class="flex justify-center gap-8 mt-4 text-2xl">
-            <a href="https://discord.com/invite/mixigaming" target="_blank" class="flex items-center gap-2 hover:text-yellow-400 transition-colors"><i class="ph-bold ph-discord-logo"></i>Discord</a>
-            <a href="https://github.com/TienPhuc1504" target="_blank" class="flex items-center gap-2 hover:text-yellow-400 transition-colors"><i class="ph-bold ph-github-logo"></i>GitHub</a>
-            <a href="https://www.facebook.com/share/1ECE2gYVua/" target="_blank" class="flex items-center gap-2 hover:text-yellow-400 transition-colors"><i class="ph-bold ph-facebook-logo"></i>Facebook</a>
+          <div class="flex justify-center gap-6 md:gap-8 mt-4 text-xl md:text-2xl">
+            <a href="https://discord.com/invite/mixigaming" target="_blank" class="flex items-center gap-2 hover:text-yellow-400 transition-colors"><i class="ph-bold ph-discord-logo"></i><span class="hidden sm:inline">Discord</span></a>
+            <a href="https://github.com/TienPhuc1504" target="_blank" class="flex items-center gap-2 hover:text-yellow-400 transition-colors"><i class="ph-bold ph-github-logo"></i><span class="hidden sm:inline">GitHub</span></a>
+            <a href="https://www.facebook.com/share/1ECE2gYVua/" target="_blank" class="flex items-center gap-2 hover:text-yellow-400 transition-colors"><i class="ph-bold ph-facebook-logo"></i><span class="hidden sm:inline">Facebook</span></a>
           </div>
         </div>
       </div>
     </section>
   </main>
 
-  <button id="scrollToTopBtn" class="fixed bottom-6 right-6 z-50 p-4 text-white shadow-lg opacity-0 pointer-events-none transition-all duration-500 ease-out scale-75 glass" aria-label="Scroll to top">
+  <button id="scrollToTopBtn" class="fixed bottom-6 right-6 z-50 p-3 md:p-4 text-white shadow-lg opacity-0 pointer-events-none transition-all duration-500 ease-out scale-75 glass" aria-label="Scroll to top">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
     </svg>
@@ -383,55 +399,47 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // Fade in body
+    // --- Các đoạn mã khác giữ nguyên ---
     document.body.classList.add('opacity-100');
 
     const sections = document.querySelectorAll('main section[id]');
-    const navLinks = document.querySelectorAll('#desktop-menu a');
+    const desktopNavLinks = document.querySelectorAll('#desktop-menu a');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
 
-    // --- Intersection Observer for Active Nav Link ---
     const sectionObserver = new IntersectionObserver((entries) => {
+      let currentSectionId = '';
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const sectionId = entry.target.getAttribute('id');
-          navLinks.forEach(link => link.classList.remove('active-link'));
-
-          // Fallback to home link if no specific section link is found
-          const activeLink = document.querySelector(`#desktop-menu a[href="#${sectionId}"]`) || document.querySelector('#desktop-menu a[href="#"]');
-          if (activeLink) {
-            activeLink.classList.add('active-link');
-          }
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+          currentSectionId = entry.target.getAttribute('id');
         }
       });
-    }, {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.6
-    }); // 60% of the section must be visible
+      if (window.scrollY < 300) {
+        currentSectionId = 'home';
+      }
+      desktopNavLinks.forEach(link => {
+        link.classList.remove('active-link');
+        const href = link.getAttribute('href');
+        if ((href === '#' && currentSectionId === 'home') || href === `#${currentSectionId}`) {
+          link.classList.add('active-link');
+        }
+      });
+    }, { root: null, rootMargin: '0px', threshold: 0.6 });
 
     sections.forEach(section => sectionObserver.observe(section));
-    // Set home as active by default
     document.querySelector('#desktop-menu a[href="#"]')?.classList.add('active-link');
 
-
-    // --- Intersection Observer for Scroll Animations ---
     const elements = document.querySelectorAll('.animate-scroll');
     const scrollObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          // Add a slight delay for a nicer effect
           setTimeout(() => entry.target.classList.add('visible'), 200);
         } else {
           entry.target.classList.remove('visible');
         }
       });
-    }, {
-      threshold: 0.1
-    }); // Trigger when 10% of the element is visible
+    }, { threshold: 0.1 });
     elements.forEach(el => scrollObserver.observe(el));
 
-
-    // --- Scroll to Top Button Logic ---
     const scrollBtn = document.getElementById('scrollToTopBtn');
     window.addEventListener('scroll', () => {
       if (window.scrollY > 300) {
@@ -442,25 +450,20 @@
         scrollBtn.classList.remove('opacity-100', 'pointer-events-auto', 'scale-100');
       }
     });
-    scrollBtn.addEventListener('click', () => window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    }));
+    scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-    // --- Wavy Text Animation ---
     const wavyTextElements = document.querySelectorAll('.wavy-text');
     wavyTextElements.forEach(element => {
       const text = element.textContent.trim();
-      element.innerHTML = ''; // Clear original text
+      element.innerHTML = '';
       text.split('').forEach((char, index) => {
         const span = document.createElement('span');
-        span.innerHTML = (char === ' ') ? '&nbsp;' : char; // Handle spaces
+        span.innerHTML = (char === ' ') ? '&nbsp;' : char;
         span.style.animationDelay = `${index * 50}ms`;
         element.appendChild(span);
       });
     });
 
-    // --- Typing Effect Logic ---
     const texts = ["Software Engineer", "Student"];
     const typingElement = document.getElementById("typing-text");
     let textIndex = 0;
@@ -469,31 +472,95 @@
 
     function type() {
       if (!typingElement) return;
-
       const currentText = texts[textIndex];
       const displayedText = currentText.slice(0, charIndex);
       typingElement.textContent = displayedText;
-
       if (!isDeleting && charIndex < currentText.length) {
-        // Typing forward
         charIndex++;
         setTimeout(type, 120);
       } else if (isDeleting && charIndex > 0) {
-        // Deleting
         charIndex--;
         setTimeout(type, 50);
       } else {
-        // Switch between typing and deleting
         isDeleting = !isDeleting;
         if (!isDeleting) {
-          // Move to the next text after finishing deleting
           textIndex = (textIndex + 1) % texts.length;
         }
-        setTimeout(type, isDeleting ? 1200 : 300); // Pause before starting to delete or type again
+        setTimeout(type, isDeleting ? 1200 : 300);
       }
     }
-    // Initial call
     type();
+
+    const contactLink = document.getElementById('contact-link');
+    if (contactLink) {
+      contactLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        const contactSection = document.getElementById('contact');
+        if (contactSection) {
+          contactSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+    }
+
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+    const menuIcon = mobileMenuButton.querySelector('i');
+
+    function openMenu() {
+      mobileMenuOverlay.classList.remove('hidden');
+      mobileMenu.classList.remove('translate-x-full');
+      menuIcon.classList.remove('ph-list');
+      menuIcon.classList.add('ph-x');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+      mobileMenu.classList.add('translate-x-full');
+      mobileMenuOverlay.classList.add('hidden');
+      menuIcon.classList.remove('ph-x');
+      menuIcon.classList.add('ph-list');
+      document.body.style.overflow = '';
+    }
+
+    mobileMenuButton.addEventListener('click', () => {
+      const isMenuClosed = mobileMenu.classList.contains('translate-x-full');
+      if (isMenuClosed) {
+        openMenu();
+      } else {
+        closeMenu();
+      }
+    });
+
+    mobileMenuOverlay.addEventListener('click', closeMenu);
+    
+    // --- UPDATED LOGIC FOR MOBILE NAV LINKS ---
+    mobileNavLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href');
+        
+        closeMenu(); // Close the menu first
+
+        // Wait for the menu closing animation to finish
+        setTimeout(() => {
+          // **If it's the Home link, scroll to top**
+          if (targetId === '#') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
+            // **Otherwise, scroll to the specific section**
+            const targetSection = document.querySelector(targetId);
+            if (targetSection) {
+              let blockPosition = 'start';
+              if (targetId === '#contact') {
+                blockPosition = 'center';
+              }
+              targetSection.scrollIntoView({ behavior: 'smooth', block: blockPosition });
+            }
+          }
+        }, 300); // 300ms matches the transition duration
+      });
+    });
   });
 </script>
 
