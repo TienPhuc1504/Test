@@ -23,7 +23,6 @@
 
     html {
       scroll-behavior: smooth;
-      /* Forces scrollbar to prevent layout shifts, aiding centering calculations */
       overflow-y: scroll;
     }
 
@@ -36,7 +35,6 @@
     }
 
     main section[id] {
-      /* Adjusted for fixed header height */
       scroll-margin-top: 100px;
     }
 
@@ -95,16 +93,20 @@
       -webkit-backdrop-filter: blur(30px) saturate(180%);
       border: 1px solid rgba(255, 255, 255, 0.18);
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-      transition: all 0.4s ease-out;
+      transition: all 0.4s ease-out, transform 0.15s ease-in-out;
     }
 
-    .glass:hover {
+    .glass:not(header):hover {
       transform: translateY(-8px);
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 25px var(--starry-yellow, 0.4);
     }
 
     header {
       transition: background-color 0.3s ease-out;
+    }
+
+    header.glass.header-clicked {
+        transform: translateY(0) scale(0.95);
     }
 
     header nav a {
@@ -191,11 +193,10 @@
 
     @keyframes float-dance {
       from {
-        transform: translateY(-8px);
+        transform: translateY(0);
       }
-
       to {
-        transform: translateY(8px);
+        transform: translateY(-16px);
       }
     }
 
@@ -206,7 +207,10 @@
     .wavy-text span {
       position: relative;
       display: inline-block;
-      animation: wave-letter 10s ease-in-out infinite;
+    }
+    
+    .wavy-text.animation-active span {
+        animation: wave-letter 10s ease-in-out infinite;
     }
 
     @keyframes wave-letter {
@@ -221,6 +225,39 @@
         transform: translateY(-20px);
       }
     }
+    
+    #header-icon > i {
+        transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    }
+
+    .icon-changing {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+    
+    .icon-entering {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+    
+    @media (max-width: 767px) {
+        header.glass {
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            padding: 0.3rem 1.25rem; /* Further reduced vertical padding */
+            cursor: pointer;
+        }
+
+        header.glass.header-clicked {
+            transform: translateX(-50%) scale(0.9);
+        }
+
+        #scrollToTopBtn:hover {
+            transform: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+        }
+    }
   </style>
 </head>
 
@@ -228,7 +265,11 @@
 
   <header class="fixed top-4 left-4 right-4 z-50 px-6 py-3 glass rounded-full shadow-lg">
     <nav class="max-w-7xl mx-auto flex justify-between items-center">
-      <a href="#" class="text-lg md:text-xl font-semibold hover:text-yellow-400 transition-colors duration-300">VŨ TIẾN PHÚC</a>
+      <a href="#" class="hidden md:block text-lg md:text-xl font-semibold hover:text-yellow-400 transition-colors duration-300">VŨ TIẾN PHÚC</a>
+      
+      <div id="header-icon" class="md:hidden text-2xl text-yellow-400">
+        <i class="ph ph-house"></i>
+      </div>
 
       <ul id="desktop-menu" class="hidden md:flex flex-row items-center gap-8">
         <li><a href="#" class="flex items-center gap-2 hover:text-yellow-400"><i class="ph ph-house"></i>Home</a></li>
@@ -253,12 +294,11 @@
     </ul>
   </div>
 
-
   <main class="pt-28">
      <section id="home" class="min-h-screen flex items-center justify-center px-6">
       <div class="max-w-6xl w-full flex flex-col-reverse md:flex-row items-center justify-center md:justify-between gap-12 md:gap-16 animate-scroll -mt-28">
-        <div class="w-full md:w-3/4 text-center md:text-left">
-          <div class="space-y-4 animate-float">
+        <div id="home-text-block" class="w-full md:w-3/4 text-center md:text-left space-y-4">
+          <div>
             <p class="text-lg md:text-xl text-gray-400 mb-2">Hi, tôi là</p>
             <h1 class="wavy-text text-4xl sm:text-5xl md:text-6xl font-bold mb-4">VŨ TIẾN PHÚC</h1>
             <p class="text-xl md:text-2xl text-gray-300 h-8"><span id="typing-text" class="typing"></span></p>
@@ -399,34 +439,81 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // --- Các đoạn mã khác giữ nguyên ---
     document.body.classList.add('opacity-100');
 
+    const header = document.querySelector('header');
     const sections = document.querySelectorAll('main section[id]');
     const desktopNavLinks = document.querySelectorAll('#desktop-menu a');
     const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
-
-    const sectionObserver = new IntersectionObserver((entries) => {
-      let currentSectionId = '';
-      entries.forEach(entry => {
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
-          currentSectionId = entry.target.getAttribute('id');
-        }
-      });
-      if (window.scrollY < 300) {
-        currentSectionId = 'home';
-      }
+    const headerIcon = document.getElementById('header-icon');
+    
+    function updateActiveLinks(sectionId) {
       desktopNavLinks.forEach(link => {
         link.classList.remove('active-link');
         const href = link.getAttribute('href');
-        if ((href === '#' && currentSectionId === 'home') || href === `#${currentSectionId}`) {
+        if ((href === '#' && sectionId === 'home') || href === `#${sectionId}`) {
           link.classList.add('active-link');
         }
       });
-    }, { root: null, rootMargin: '0px', threshold: 0.6 });
+    }
+
+    function updateHeaderIcon(sectionId) {
+      const iconMap = { home: 'ph-house', about: 'ph-user', skills: 'ph-code', contact: 'ph-envelope' };
+      const iconClass = iconMap[sectionId] || 'ph-house';
+      const currentIcon = headerIcon.querySelector('i');
+
+      if (currentIcon && currentIcon.classList.contains(iconClass)) {
+        return;
+      }
+      
+      if (currentIcon) {
+        currentIcon.classList.add('icon-changing');
+      }
+      
+      setTimeout(() => {
+        headerIcon.innerHTML = `<i class="ph ${iconClass} icon-entering"></i>`;
+        
+        setTimeout(() => {
+          const newIcon = headerIcon.querySelector('i');
+          if (newIcon) {
+            newIcon.classList.remove('icon-entering');
+          }
+        }, 20);
+      }, 300);
+    }
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const currentSectionId = entry.target.id;
+          updateActiveLinks(currentSectionId);
+          updateHeaderIcon(currentSectionId);
+        }
+      });
+    }, {
+      rootMargin: '-150px 0px -60% 0px'
+    });
 
     sections.forEach(section => sectionObserver.observe(section));
-    document.querySelector('#desktop-menu a[href="#"]')?.classList.add('active-link');
+    
+    if (header) {
+      header.addEventListener('click', (e) => {
+        if (window.innerWidth >= 768) {
+          return;
+        }
+
+        if (e.target.closest('a') || e.target.closest('button')) {
+          return;
+        }
+
+        header.classList.add('header-clicked');
+        setTimeout(() => {
+            header.classList.remove('header-clicked');
+        }, 150);
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
 
     const elements = document.querySelectorAll('.animate-scroll');
     const scrollObserver = new IntersectionObserver((entries) => {
@@ -490,7 +577,7 @@
       }
     }
     type();
-
+    
     const contactLink = document.getElementById('contact-link');
     if (contactLink) {
       contactLink.addEventListener('click', function(e) {
@@ -501,7 +588,7 @@
         }
       });
     }
-
+    
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
     const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
@@ -534,21 +621,17 @@
 
     mobileMenuOverlay.addEventListener('click', closeMenu);
     
-    // --- UPDATED LOGIC FOR MOBILE NAV LINKS ---
     mobileNavLinks.forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         const targetId = link.getAttribute('href');
         
-        closeMenu(); // Close the menu first
+        closeMenu();
 
-        // Wait for the menu closing animation to finish
         setTimeout(() => {
-          // **If it's the Home link, scroll to top**
           if (targetId === '#') {
             window.scrollTo({ top: 0, behavior: 'smooth' });
           } else {
-            // **Otherwise, scroll to the specific section**
             const targetSection = document.querySelector(targetId);
             if (targetSection) {
               let blockPosition = 'start';
@@ -558,9 +641,15 @@
               targetSection.scrollIntoView({ behavior: 'smooth', block: blockPosition });
             }
           }
-        }, 300); // 300ms matches the transition duration
+        }, 300);
       });
     });
+
+    setTimeout(() => {
+        document.getElementById('home-text-block')?.classList.add('animate-float');
+        document.querySelector('.wavy-text')?.classList.add('animation-active');
+    }, 3000);
+
   });
 </script>
 
